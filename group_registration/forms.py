@@ -12,16 +12,19 @@ class BasicInfoForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'password1', 'password2', 'email']
+        fields = ['username', 'password1', 'password2', 'email', 'user_type']
 
-        def save(self, commit=True):
-            user = super(UserCreationForm, self).save(commit=False)
-            user.user_type = self.cleaned_data['user_type']
-            
-            if commit:
-                user.save()
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
 
-            return user
+        LOG.debug("user_type from form:" + self.cleaned_data['user_type'])
+        if commit:
+            user.save()  # First save the created user
+            user.basicinfo.user_type = self.cleaned_data['user_type']
+            user.save()  # save the basic info
+
+        return user
+
 
 class PlayerForm(forms.Form):
     game = forms.ChoiceField(models.Player.GAME_CHOICES)
