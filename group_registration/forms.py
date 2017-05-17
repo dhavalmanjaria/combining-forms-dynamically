@@ -19,7 +19,7 @@ class BasicInfoForm(UserCreationForm):
 
         LOG.debug("user_type from form:" + self.cleaned_data['user_type'])
         if commit:
-            user.save()  # First save the created user
+            user.save()  # First save the created user,
             user.basicinfo.user_type = self.cleaned_data['user_type']
             user.save()  # save the basic info
 
